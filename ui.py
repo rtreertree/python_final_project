@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+import pandas as pd
 import ctypes as ct
 
 class ui:
@@ -15,6 +16,13 @@ class ui:
         ct.windll.shcore.SetProcessDpiAwareness(1)
     # init 
     def __init__(self, name):
+        emptydf = pd.DataFrame(columns=["name", "height", "weight", "bmi", "timestamp"])
+        try:
+            emptydf.to_csv("data.csv", mode="x", index=False)
+        except:
+            pass
+
+
         self.window_config()
         
         self.name: str = name
@@ -144,6 +152,10 @@ class ui:
         title_label.bind('<Button-1>',get_title_click)
         title_label.bind('<B1-Motion>',move_window)
 
+        def save_to_file():
+            df = pd.DataFrame({"name":self.name_entry.get(), "height":self.height, "weight":self.weight, "bmi":self.bmi, "timestamp": pd.Timestamp.now()}, index=[0])
+            df.to_csv("data.csv", mode="a", header=False, index=False)
+            pass
 
         # create result label
         self.result_label = Label(self.result_window,text='Result',font=('Arial',20,'bold'))
@@ -155,7 +167,7 @@ class ui:
         self.bmi_label = Label(self.result_frame,text=f'BMI: {self.bmi:.2f}',font=('Arial',15))
         self.bmi_label.grid(row=0,column=0,padx=10,pady=10)
         # create save button
-        self.save_button = Button(self.result_frame,text='Save',font=('Arial',15))
+        self.save_button = Button(self.result_frame,text='Save',font=('Arial',15), command=save_to_file)
         self.save_button.grid(row=1,column=0,padx=10,pady=10,sticky='we')
 
     def mainloop(self):
