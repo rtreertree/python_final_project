@@ -1,6 +1,11 @@
-import ui
+from ui import *
+import pandas as pd
 
-# window 10, 11 only;
+emptydf = pd.DataFrame(columns=["name", "height", "weight", "bmi", "timestamp"])
+try:
+    emptydf.to_csv("data.csv", mode="x", index=False)
+except:
+    pass
 
-root = ui.ui("BMI Calculator")
+root = ui("BMI Calculator")
 root.mainloop()

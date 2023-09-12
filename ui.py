@@ -16,13 +16,6 @@ class ui:
         ct.windll.shcore.SetProcessDpiAwareness(1)
     # init 
     def __init__(self, name):
-        emptydf = pd.DataFrame(columns=["name", "height", "weight", "bmi", "timestamp"])
-        try:
-            emptydf.to_csv("data.csv", mode="x", index=False)
-        except:
-            pass
-
-
         self.window_config()
         
         self.name: str = name
@@ -31,6 +24,7 @@ class ui:
         self.window.geometry('500x350')
         self.window.resizable(False, False)
         self.window.configure(bg=self.color3)
+        self.window.eval('tk::PlaceWindow . center')
 
         # custom title bar
         self.window.overrideredirect(True)
@@ -102,10 +96,18 @@ class ui:
             self.isResultDisplayed = True
    
         try:
+            self.username = self.name_entry.get()
+            if self.username == '':
+                self.isResultDisplayed = False
+                messagebox.showerror('Error','Please enter your name')
+                return
+
             self.weight = float(self.weight_entry.get())
             self.height = float(self.height_entry.get())
             self.bmi = self.weight / ((self.height/100)**2)
+            self.bmi = round(self.bmi,2)
         except:
+            self.isResultDisplayed = False
             messagebox.showerror('Error','Please enter valid number')
             return
 
@@ -115,6 +117,8 @@ class ui:
         self.result_window.geometry('400x300')
         self.result_window.resizable(False,False)
         self.result_window.overrideredirect(True)
+        self.result_window.eval('tk::PlaceWindow . center')
+        self.result_window.configure(bg=self.color3)
 
         title_bar = Frame(self.result_window, bg=self.color3, relief="raised", bd=2)
 
@@ -153,12 +157,13 @@ class ui:
         title_label.bind('<B1-Motion>',move_window)
 
         def save_to_file():
-            df = pd.DataFrame({"name":self.name_entry.get(), "height":self.height, "weight":self.weight, "bmi":self.bmi, "timestamp": pd.Timestamp.now()}, index=[0])
+            df = pd.DataFrame({"name":self.username, "height":self.height, "weight":self.weight, "bmi":self.bmi, "timestamp": pd.Timestamp.now()}, index=[0])
             df.to_csv("data.csv", mode="a", header=False, index=False)
-            pass
+            self.isResultDisplayed = False
+            self.result_window.destroy()
 
         # create result label
-        self.result_label = Label(self.result_window,text='Result',font=('Arial',20,'bold'))
+        self.result_label = Label(self.result_window,text='Result',font=('Arial',20,'bold'), bg=self.color3, fg=self.color5)
         self.result_label.pack(pady=10)
         # create result frame
         self.result_frame = Frame(self.result_window,padx=10,pady=10,bg='#f0f0f0')
