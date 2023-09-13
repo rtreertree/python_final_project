@@ -60,6 +60,11 @@ class ui:
         title_label.bind('<Button-1>',get_title_click)
         title_label.bind('<B1-Motion>',move_window)
 
+        def on_btn_hover(event):
+            event.widget['background'] = self.color2
+        def on_btn_leave(event):
+            event.widget['background'] = self.color5
+
 
         # # create header label
         # self.header_label = Label(self.window,text='BMI Calculator',font=('Arial',20), bg=self.color3, fg=self.color5)
@@ -86,9 +91,17 @@ class ui:
         # create button
         self.calculate_button = Button(self.main_frame,text='Calculate',font=('Arial',15),bg=self.color5,command=self.calculate)
         self.calculate_button.grid(row=3,column=0,columnspan=2,padx=10,pady=50,sticky='we')
+
+        self.calculate_button.bind('<Enter>',on_btn_hover)
+        self.calculate_button.bind('<Leave>',on_btn_leave)
         
 
-    def calculate(self):     
+    def calculate(self):        
+        def on_btn_hover(event):
+            event.widget['background'] = self.color2
+        def on_btn_leave(event):
+            event.widget['background'] = self.color5
+
 
         if self.isResultDisplayed:
             return
@@ -166,14 +179,17 @@ class ui:
         self.result_label = Label(self.result_window,text='Result',font=('Arial',20,'bold'), bg=self.color3, fg=self.color5)
         self.result_label.pack(pady=10)
         # create result frame
-        self.result_frame = Frame(self.result_window,padx=10,pady=10,bg='#f0f0f0')
+        self.result_frame = Frame(self.result_window,padx=10,pady=10,bg=self.color3)
         self.result_frame.pack()
         # create result
-        self.bmi_label = Label(self.result_frame,text=f'BMI: {self.bmi:.2f}',font=('Arial',15))
+        self.bmi_label = Label(self.result_frame,text=f'BMI: {self.bmi:.2f}',font=('Arial',15), bg=self.color3, fg=self.color5)
         self.bmi_label.grid(row=0,column=0,padx=10,pady=10)
         # create save button
-        self.save_button = Button(self.result_frame,text='Save',font=('Arial',15), command=save_to_file)
+        self.save_button = Button(self.result_frame,text='Save',font=('Arial',15), command=save_to_file, background=self.color5)
         self.save_button.grid(row=1,column=0,padx=10,pady=10,sticky='we')
+
+        self.save_button.bind('<Enter>',on_btn_hover)
+        self.save_button.bind('<Leave>',on_btn_leave)
 
     def mainloop(self):
         self.window.mainloop()
