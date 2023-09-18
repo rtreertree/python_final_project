@@ -14,6 +14,7 @@ class ui:
 
     def window_config(self):
         ct.windll.shcore.SetProcessDpiAwareness(1)
+
     # init 
     def __init__(self, name):
         self.window_config()
@@ -119,11 +120,22 @@ class ui:
             self.height = float(self.height_entry.get())
             self.bmi = self.weight / ((self.height/100)**2)
             self.bmi = round(self.bmi,2)
+
+            if self.bmi < 18.5:
+                self.type = 'Underweight'
+            elif self.bmi >= 18.5 and self.bmi < 25:
+                self.type = 'Normal'
+            elif self.bmi >= 25 and self.bmi < 30:
+                self.type = 'Overweight'
+            elif self.bmi >= 30:
+                self.type = 'Obese'
+
         except:
             self.isResultDisplayed = False
             messagebox.showerror('Error','Please enter valid number')
             return
 
+        
 
         self.result_window = Tk()
         self.result_window.title('Result')
@@ -178,6 +190,9 @@ class ui:
         # create result label
         self.result_label = Label(self.result_window,text='Result',font=('Arial',20,'bold'), bg=self.color3, fg=self.color5)
         self.result_label.pack(pady=10)
+        # create type label
+        self.type_label = Label(self.result_window,text=f'Type: {self.type}',font=('Arial',15), bg=self.color3, fg=self.color5)
+        self.type_label.pack(pady=10)
         # create result frame
         self.result_frame = Frame(self.result_window,padx=10,pady=10,bg=self.color3)
         self.result_frame.pack()
@@ -193,5 +208,3 @@ class ui:
 
     def mainloop(self):
         self.window.mainloop()
-
-        
